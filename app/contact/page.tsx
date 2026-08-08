@@ -1,26 +1,36 @@
-import type { Metadata } from 'next'
-import { Mail, MapPin, Clock } from 'lucide-react'
-import { SiteHeader } from '@/components/site-header'
-import { SiteFooter } from '@/components/site-footer'
-import { ContactForm } from '@/components/contact-form'
+import { ContactForm } from "@/components/contact-form";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+import { Clock, Mail, MapPin } from "lucide-react";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Book a Session — INNOVI Solutions',
+  title: "Book a Session — INNOVI Solutions",
   description:
-    'Book a discovery call or technical deep-dive with INNOVI Solutions to scope your custom software, SaaS, AI automation, or data engineering project.',
-}
+    "Book a discovery call or technical deep-dive with INNOVI Solutions to scope your custom software, SaaS, AI automation, or data engineering project.",
+};
 
 const STEPS = [
-  { n: '01', text: 'Pick a session type and share a little about the problem.' },
-  { n: '02', text: 'We confirm a time and send a short prep note.' },
-  { n: '03', text: 'We meet, scope the work, and map the shortest path to a fit.' },
-]
+  {
+    n: "01",
+    text: "Pick a session type and share a little about the problem.",
+  },
+  { n: "02", text: "We confirm a time and send a short prep note." },
+  {
+    n: "03",
+    text: "We meet, scope the work, and map the shortest path to a fit.",
+  },
+];
 
 const DETAILS = [
-  { icon: Mail, label: 'Email', value: 'hello@innovi.solutions' },
-  { icon: Clock, label: 'Response time', value: 'Within 1 business day' },
-  { icon: MapPin, label: 'Working with', value: 'Remote-first, global clients' },
-]
+  { icon: Mail, label: "Email", value: "queries@innovi.solutions" },
+  { icon: Clock, label: "Response time", value: "Within 1 business day" },
+  {
+    icon: MapPin,
+    label: "Working with",
+    value: "Remote-first, global clients",
+  },
+];
 
 export default function ContactPage() {
   return (
@@ -100,5 +110,5 @@ export default function ContactPage() {
       </main>
       <SiteFooter />
     </div>
-  )
+  );
 }
