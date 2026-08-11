@@ -36,9 +36,9 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-pretty text-center text-base leading-relaxed text-muted-foreground sm:text-lg">
-          INNOVI designs and builds software, data systems, and AI agents shaped
-          around how your business actually operates then hosts and maintains
-          them.
+          INNOVI SOLUTIONS designs and builds software, data systems, and AI
+          agents shaped around how your business actually operates then hosts
+          and maintains them.
         </p>
 
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">

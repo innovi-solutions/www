@@ -1,36 +1,36 @@
-import { Analytics } from '@vercel/analytics/next'
-import type { Metadata, Viewport } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
-import './globals.css'
+import { Analytics } from "@vercel/analytics/next";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import "./globals.css";
 
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
-  display: 'swap',
-})
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: 'INNOVI Solutions — The Forge for Custom Software & AI',
+  title: "INNOVI SOLUTIONS — The Forge for Custom Software & AI",
   description:
-    'INNOVI designs and builds custom software, SaaS, data systems, and AI agents shaped around how your business actually operates — plus hosting and maintenance.',
-  generator: 'v0.app',
-}
+    "INNOVI SOLUTIONS designs and builds custom software, SaaS, data systems, and AI agents shaped around how your business actually operates plus hosting and maintenance.",
+  generator: "v0.app",
+};
 
 export const viewport: Viewport = {
-  colorScheme: 'light',
-  themeColor: '#14213d',
-}
+  colorScheme: "light",
+  themeColor: "#14213d",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
@@ -39,8 +39,8 @@ export default function RootLayout({
     >
       <body className="font-sans antialiased">
         {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
-  )
+  );
 }
