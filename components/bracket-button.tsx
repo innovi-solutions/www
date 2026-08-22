@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 interface BracketButtonProps {
   children: ReactNode
   href?: string
+  onClick?: () => void
   variant?: 'primary' | 'outline'
   size?: 'sm' | 'md'
   className?: string
@@ -12,26 +13,25 @@ interface BracketButtonProps {
 // Sharp-cornered CTA with copper corner-bracket accents ("sparks").
 export function BracketButton({
   children,
-  href = '#',
+  href,
+  onClick,
   variant = 'primary',
   size = 'md',
   className,
 }: BracketButtonProps) {
   const isPrimary = variant === 'primary'
   const bracket = isPrimary ? 'border-amber' : 'border-accent'
+  const sharedClassName = cn(
+    'group relative inline-flex items-center justify-center font-mono uppercase tracking-[0.15em] transition-colors',
+    size === 'sm' ? 'px-4 py-2 text-[11px]' : 'px-6 py-3.5 text-xs',
+    isPrimary
+      ? 'bg-accent text-accent-foreground hover:bg-accent/90'
+      : 'border border-foreground/40 text-foreground hover:border-foreground hover:bg-foreground/5',
+    className,
+  )
 
-  return (
-    <a
-      href={href}
-      className={cn(
-        'group relative inline-flex items-center justify-center font-mono uppercase tracking-[0.15em] transition-colors',
-        size === 'sm' ? 'px-4 py-2 text-[11px]' : 'px-6 py-3.5 text-xs',
-        isPrimary
-          ? 'bg-accent text-accent-foreground hover:bg-accent/90'
-          : 'border border-foreground/40 text-foreground hover:border-foreground hover:bg-foreground/5',
-        className,
-      )}
-    >
+  const brackets = (
+    <>
       {/* corner brackets */}
       <span
         className={cn(
@@ -62,6 +62,20 @@ export function BracketButton({
         aria-hidden="true"
       />
       {children}
+    </>
+  )
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={sharedClassName}>
+        {brackets}
+      </button>
+    )
+  }
+
+  return (
+    <a href={href ?? '#'} className={sharedClassName}>
+      {brackets}
     </a>
   )
 }

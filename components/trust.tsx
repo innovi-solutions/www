@@ -1,6 +1,48 @@
-import { BracketButton } from "./bracket-button";
+'use client'
+
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { BracketButton } from './bracket-button'
+import { DataHandlingDialog } from './data-handling-dialog'
+
+const DATA_HANDLING_HASH = '#how-we-handle-your-data'
 
 export function Trust() {
+  const [dataDialogOpen, setDataDialogOpen] = useState(false)
+  const openedViaButton = useRef(false)
+
+  // Keep the overlay in sync with the URL hash so it's deep-linkable and the
+  // browser back button closes it, same as any other page in the site.
+  useEffect(() => {
+    const syncFromHash = () => setDataDialogOpen(window.location.hash === DATA_HANDLING_HASH)
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [])
+
+  const openDataDialog = useCallback(() => {
+    openedViaButton.current = true
+    window.location.hash = DATA_HANDLING_HASH
+  }, [])
+
+  const closeDataDialog = useCallback(() => {
+    // Only step back in history if we're the ones who pushed the hash entry,
+    // otherwise (e.g. a shared deep link) just drop the hash in place.
+    if (window.location.hash === DATA_HANDLING_HASH && openedViaButton.current) {
+      openedViaButton.current = false
+      window.history.back()
+    } else {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      setDataDialogOpen(false)
+    }
+  }, [])
+
+  // A nav link inside the overlay updates the URL via the router's History API,
+  // which doesn't fire hashchange, so close the overlay directly on click.
+  const dismissDataDialogForNavigation = useCallback(() => {
+    openedViaButton.current = false
+    setDataDialogOpen(false)
+  }, [])
+
   return (
     <section className="border-b border-border bg-primary text-primary-foreground">
       <div className="relative overflow-hidden">
@@ -29,7 +71,7 @@ export function Trust() {
           </p>
           <div className="mt-9 flex justify-center">
             <BracketButton
-              href="#contact"
+              onClick={openDataDialog}
               variant="outline"
               className="border-primary-foreground/40 text-primary-foreground hover:border-primary-foreground hover:bg-primary-foreground/10"
             >
@@ -38,6 +80,12 @@ export function Trust() {
           </div>
         </div>
       </div>
+      <DataHandlingDialog
+        open={dataDialogOpen}
+        onClose={closeDataDialog}
+        onNavigate={dismissDataDialogForNavigation}
+      />
     </section>
   );
 }
+
