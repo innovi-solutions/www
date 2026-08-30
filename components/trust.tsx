@@ -44,7 +44,7 @@ export function Trust() {
   }, [])
 
   return (
-    <section className="border-b border-border bg-primary text-primary-foreground">
+    <section className="border-b border-border bg-black text-primary-foreground">
       <div className="relative overflow-hidden">
         {/* faint grid */}
         <div
@@ -57,7 +57,7 @@ export function Trust() {
           }}
         />
         <div className="relative mx-auto max-w-4xl px-5 py-24 text-center sm:px-8 sm:py-32">
-          <span className="font-mono text-xs uppercase tracking-[0.25em] text-amber">
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
             Trust &amp; Security
           </span>
           <h2 className="mx-auto mt-5 max-w-3xl text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl">

@@ -8,7 +8,6 @@ import { BracketButton } from './bracket-button'
 
 const NAV = [
   { label: 'SERVICES', href: '/#services' },
-  { label: 'WORK', href: '/#work' },
   { label: 'HOW WE WORK', href: '/#how-we-work' },
   { label: 'ABOUT', href: '/#about' },
 ]

@@ -1,7 +1,6 @@
 import { SiteHeader } from '@/components/site-header'
 import { Hero } from '@/components/hero'
 import { WhatWeDo } from '@/components/what-we-do'
-import { Work } from '@/components/work'
 import { HowWeWork } from '@/components/how-we-work'
 import { Trust } from '@/components/trust'
 import { Process } from '@/components/process'
@@ -17,7 +16,6 @@ export default function Home() {
       <main>
         <Hero />
         <WhatWeDo />
-        <Work />
         <HowWeWork />
         <Trust />
         <Process />

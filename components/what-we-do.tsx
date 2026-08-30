@@ -3,6 +3,7 @@
 import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { ForgeDiagram } from "./forge-diagram";
+import { useReveal } from "@/lib/use-reveal";
 
 const SERVICES = [
   {
@@ -29,6 +30,7 @@ const SERVICES = [
 
 export function WhatWeDo() {
   const [openIndex, setOpenIndex] = useState(0);
+  const { ref: listRef, visible: listVisible } = useReveal<HTMLDivElement>();
 
   return (
     <section id="services" className="border-b border-border">
@@ -44,11 +46,17 @@ export function WhatWeDo() {
 
         <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
           {/* accordion */}
-          <div className="border-t border-border">
+          <div ref={listRef} className="border-t border-border">
             {SERVICES.map((service, i) => {
               const isOpen = i === openIndex;
               return (
-                <div key={service.n} className="border-b border-border">
+                <div
+                  key={service.n}
+                  style={{ transitionDelay: listVisible ? `${i * 90}ms` : "0ms" }}
+                  className={`border-b border-border transition-all duration-500 ease-out ${
+                    listVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+                  }`}
+                >
                   <button
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? -1 : i)}
