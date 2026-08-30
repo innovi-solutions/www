@@ -43,9 +43,6 @@ export function Hero() {
 
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <BracketButton href="/contact">Book a Session</BracketButton>
-          <BracketButton href="#work" variant="outline">
-            See Our Work
-          </BracketButton>
         </div>
 
         {/* below-fold numbered strip */}

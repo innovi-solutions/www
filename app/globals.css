@@ -66,17 +66,17 @@
   --muted: oklch(0.946 0.006 240);
   --muted-foreground: oklch(0.5 0.025 255);
   /* logo blue as the primary accent */
-  --accent: oklch(0.54 0.19 252);
+  --accent: #b71316;
   --accent-foreground: oklch(0.985 0.004 240);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.88 0.008 240);
   --input: oklch(0.88 0.008 240);
-  --ring: oklch(0.54 0.19 252);
+  --ring: #b71316;
   /* INNOVI logo accents: blue, cyan, orange spark */
-  --copper: oklch(0.54 0.19 252);
-  --bronze: oklch(0.72 0.14 218);
+  --copper: #b71316;
+  --bronze: #b71316;
   --amber: oklch(0.72 0.17 52);
-  --chart-1: oklch(0.54 0.19 252);
+  --chart-1: #b71316;
   --chart-2: oklch(0.72 0.14 218);
   --chart-3: oklch(0.72 0.17 52);
   --chart-4: oklch(0.25 0.04 258);

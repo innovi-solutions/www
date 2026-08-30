@@ -17,6 +17,7 @@ import {
 import { SiteHeader } from './site-header'
 import { PipelineStepModal, type PipelineStepDetail } from './pipeline-step-modal'
 import { AccessControlVisual, CollectionVisual, ScopingVisual } from './pipeline-visuals'
+import { useReveal } from '@/lib/use-reveal'
 
 interface DataHandlingDialogProps {
   open: boolean
@@ -131,6 +132,7 @@ const FEATURES = [
 export function DataHandlingDialog({ open, onClose, onNavigate }: DataHandlingDialogProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [selectedStep, setSelectedStep] = useState<PipelineStepDetail | null>(null)
+  const { ref: pipelineGridRef, visible: pipelineVisible } = useReveal<HTMLDivElement>()
 
   const handleLinkClickCapture = (event: MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLElement).closest('a')) onNavigate()
@@ -210,7 +212,7 @@ export function DataHandlingDialog({ open, onClose, onNavigate }: DataHandlingDi
           </p>
         </div>
 
-        <div className="mt-10 border border-border bg-primary text-primary-foreground sm:mt-14">
+        <div className="mt-10 border border-border bg-black text-primary-foreground sm:mt-14">
           <div className="flex items-center justify-between border-b border-primary-foreground/10 px-5 py-4 sm:px-8">
             <h3 className="text-lg font-bold sm:text-xl">Data Pipeline</h3>
             <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.15em] text-primary-foreground/60">
@@ -225,15 +227,21 @@ export function DataHandlingDialog({ open, onClose, onNavigate }: DataHandlingDi
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-px bg-primary-foreground/10 sm:grid-cols-2 lg:grid-cols-4">
-            {PIPELINE_STEPS.map((detail) => {
+          <div
+            ref={pipelineGridRef}
+            className="grid grid-cols-1 gap-px bg-primary-foreground/10 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {PIPELINE_STEPS.map((detail, index) => {
               const { step, icon: Icon, title, description, tag } = detail
               return (
                 <button
                   key={step}
                   type="button"
                   onClick={() => setSelectedStep(detail)}
-                  className="group/step relative flex flex-col bg-primary p-6 text-left transition-all duration-300 ease-out hover:z-10 hover:-translate-y-1.5 hover:bg-primary-foreground/[0.04] hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.55)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70"
+                  style={{ transitionDelay: pipelineVisible ? `${index * 60}ms` : '0ms' }}
+                  className={`group/step relative flex flex-col bg-black p-6 text-left transition-all duration-500 ease-out hover:z-10 hover:-translate-y-1.5 hover:bg-primary-foreground/[0.04] hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.55)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 ${
+                    pipelineVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+                  }`}
                 >
                   <div className="mb-4 flex items-start justify-between">
                     <span className="flex h-9 w-9 items-center justify-center border border-primary-foreground/15 bg-primary-foreground/5 transition-colors duration-300 group-hover/step:border-accent/50 group-hover/step:bg-accent/10">
