@@ -96,7 +96,22 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Corner-bracket cursor for the primary nav — echoes the BracketButton's own
+   corner-bracket hover marks, so the pointer itself feels on-brand. */
+.nav-cursor {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M1 6V1H6' stroke='%23b71316' stroke-width='2'/%3E%3Cpath d='M14 1H19V6' stroke='%23b71316' stroke-width='2'/%3E%3Cpath d='M19 14V19H14' stroke='%23b71316' stroke-width='2'/%3E%3Cpath d='M6 19H1V14' stroke='%23b71316' stroke-width='2'/%3E%3C/svg%3E") 10 10, pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }

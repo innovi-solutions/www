@@ -5,7 +5,7 @@ import { Clock, Mail, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Book a Session — INNOVI Solutions",
+  title: "Book a Session",
   description:
     "Book a discovery call or technical deep-dive with INNOVI Solutions to scope your custom software, SaaS, AI automation, or data engineering project.",
 };
@@ -23,7 +23,7 @@ const STEPS = [
 ];
 
 const DETAILS = [
-  { icon: Mail, label: "Email", value: "queries@innovi.solutions" },
+  { icon: Mail, label: "Email", value: "queries@innovi-solutions.com" },
   { icon: Clock, label: "Response time", value: "Within 1 business day" },
   {
     icon: MapPin,

@@ -17,13 +17,17 @@ export function Process() {
           <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
             From First Call to Live System
           </h2>
+          <p className="mt-4 max-w-lg text-pretty text-base leading-relaxed text-muted-foreground">
+            That approach, in five concrete steps — what actually happens
+            between booking a session and going live.
+          </p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 border-t border-border sm:grid-cols-2 lg:grid-cols-5">
           {STEPS.map((step, i) => (
             <div
               key={step.n}
-              className="border-b border-border p-6 sm:border-r sm:p-7 lg:border-b-0"
+              className="border-b border-border p-6 transition-colors duration-200 hover:bg-secondary/40 sm:border-r sm:p-7 lg:border-b-0"
             >
               <span className="font-mono text-sm text-accent">
                 {step.n}

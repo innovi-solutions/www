@@ -46,7 +46,7 @@ export function WhatWeDo() {
 
         <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
           {/* accordion */}
-          <div ref={listRef} className="border-t border-border">
+          <div ref={listRef} className="border-t border-border lg:order-2">
             {SERVICES.map((service, i) => {
               const isOpen = i === openIndex;
               return (
@@ -87,7 +87,7 @@ export function WhatWeDo() {
           </div>
 
           {/* diagram */}
-          <div className="flex items-center justify-center lg:justify-end">
+          <div className="flex items-center justify-center lg:order-1 lg:justify-start">
             <ForgeDiagram />
           </div>
         </div>

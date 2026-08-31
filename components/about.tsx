@@ -6,7 +6,7 @@ const FACTS = [
 
 export function About() {
   return (
-    <section id="about" className="border-b border-border">
+    <section id="about" className="border-b border-border bg-secondary/40">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-2 lg:gap-16">
         <div>
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-bronze">
