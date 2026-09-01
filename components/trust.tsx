@@ -60,7 +60,7 @@ export function Trust() {
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
             Trust &amp; Security
           </span>
-          <h2 className="mx-auto mt-5 max-w-3xl text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
+          <h2 className="mx-auto mt-5 max-w-3xl text-balance text-4xl font-bold leading-tight tracking-tight sm:text-6xl lg:text-7xl">
             Built Right. Secured by Default.
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-primary-foreground/70 sm:text-lg">
@@ -70,11 +70,7 @@ export function Trust() {
             and data minimization by design.
           </p>
           <div className="mt-9 flex justify-center">
-            <BracketButton
-              onClick={openDataDialog}
-              variant="outline"
-              className="border-primary-foreground/40 text-primary-foreground hover:border-primary-foreground hover:bg-primary-foreground/10"
-            >
+            <BracketButton onClick={openDataDialog} variant="primary">
               How We Handle Your Data
             </BracketButton>
           </div>

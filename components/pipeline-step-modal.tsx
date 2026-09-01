@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { X } from 'lucide-react'
 import type { ComponentType } from 'react'
@@ -24,6 +24,24 @@ interface PipelineStepModalProps {
 export function PipelineStepModal({ detail, onClose }: PipelineStepModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
+  // Keep rendering the last-shown step's content during the exit transition,
+  // since `detail` itself goes to null immediately on close.
+  const [mounted, setMounted] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [renderedDetail, setRenderedDetail] = useState<PipelineStepDetail | null>(null)
+
+  useEffect(() => {
+    if (detail) {
+      setRenderedDetail(detail)
+      setMounted(true)
+      const raf = requestAnimationFrame(() => setVisible(true))
+      return () => cancelAnimationFrame(raf)
+    }
+    setVisible(false)
+    const timeout = setTimeout(() => setMounted(false), 200)
+    return () => clearTimeout(timeout)
+  }, [detail])
+
   useEffect(() => {
     if (!detail) return
 
@@ -40,20 +58,24 @@ export function PipelineStepModal({ detail, onClose }: PipelineStepModalProps) {
     return () => document.removeEventListener('keydown', onKeyDown, { capture: true })
   }, [detail, onClose])
 
-  if (!detail) return null
+  if (!mounted || !renderedDetail) return null
 
-  const { step, icon: Icon, title, description, tag, image, Visual } = detail
+  const { step, icon: Icon, title, description, tag, image, Visual } = renderedDetail
 
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="pipeline-step-title"
-      className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-primary/70 p-4 py-10 backdrop-blur-sm sm:p-8"
+      className={`fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-primary/70 p-4 py-10 backdrop-blur-sm transition-opacity duration-200 ease-out sm:p-8 ${
+        visible ? 'opacity-100' : 'opacity-0'
+      }`}
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg border border-border bg-background text-foreground shadow-2xl"
+        className={`relative w-full max-w-lg border border-border bg-background text-foreground shadow-2xl transition-all duration-200 ease-out ${
+          visible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+        }`}
         onClick={(event) => event.stopPropagation()}
       >
         <button

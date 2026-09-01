@@ -54,7 +54,7 @@ const PIPELINE_STEPS: PipelineStepDetail[] = [
     description:
       'Data moves into an isolated development environment over encrypted channels. It never sits in transit unprotected, and it never lands directly in a shared or production system.',
     tag: 'Secure Channels',
-    image: '/pipeline/secure-transfer.png',
+    image: '/pipeline/secure-transfer.webp',
   },
   {
     step: '04',
@@ -63,7 +63,7 @@ const PIPELINE_STEPS: PipelineStepDetail[] = [
     description:
       'The solution is built and tested against the data in a sandboxed environment, separate from any client production system. Where possible, synthetic or masked data stands in for sensitive values during early development.',
     tag: 'Sandboxing, Masking',
-    image: '/pipeline/processing-development.png',
+    image: '/pipeline/processing-development.webp',
   },
   {
     step: '05',
@@ -81,7 +81,7 @@ const PIPELINE_STEPS: PipelineStepDetail[] = [
     description:
       "Before going live, the solution is validated against real-world conditions and reviewed for security gaps, checking not just that it works, but that it handles data the way it's supposed to.",
     tag: 'Security Review',
-    image: '/pipeline/testing-validation.png',
+    image: '/pipeline/testing-validation.webp',
   },
   {
     step: '07',
@@ -90,7 +90,7 @@ const PIPELINE_STEPS: PipelineStepDetail[] = [
     description:
       "The finished solution goes live, with the same access controls and encryption carried into production. This is the point where the client's data starts flowing through their new system in real time.",
     tag: 'Production Encryption',
-    image: '/pipeline/deployment.png',
+    image: '/pipeline/deployment.webp',
   },
   {
     step: '08',
@@ -99,7 +99,7 @@ const PIPELINE_STEPS: PipelineStepDetail[] = [
     description:
       "Once live, data handling doesn't stop being watched, access continues to be logged, and retention policies determine how long data is kept before it's purged or anonymized, so nothing lingers indefinitely.",
     tag: 'Continuous Logging',
-    image: '/pipeline/monitoring-retention.png',
+    image: '/pipeline/monitoring-retention.webp',
   },
 ]
 
@@ -133,6 +133,22 @@ export function DataHandlingDialog({ open, onClose, onNavigate }: DataHandlingDi
   const containerRef = useRef<HTMLDivElement>(null)
   const [selectedStep, setSelectedStep] = useState<PipelineStepDetail | null>(null)
   const { ref: pipelineGridRef, visible: pipelineVisible } = useReveal<HTMLDivElement>()
+
+  // Keep the overlay mounted briefly after `open` goes false so the exit
+  // transition can play instead of the whole thing hard-cutting away.
+  const [mounted, setMounted] = useState(false)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true)
+      const raf = requestAnimationFrame(() => setVisible(true))
+      return () => cancelAnimationFrame(raf)
+    }
+    setVisible(false)
+    const timeout = setTimeout(() => setMounted(false), 200)
+    return () => clearTimeout(timeout)
+  }, [open])
 
   const handleLinkClickCapture = (event: MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLElement).closest('a')) onNavigate()
@@ -182,7 +198,7 @@ export function DataHandlingDialog({ open, onClose, onNavigate }: DataHandlingDi
     }
   }, [open, onClose, selectedStep])
 
-  if (!open) return null
+  if (!mounted) return null
 
   return (
     <div
@@ -191,7 +207,9 @@ export function DataHandlingDialog({ open, onClose, onNavigate }: DataHandlingDi
       aria-modal="true"
       aria-labelledby="data-handling-title"
       tabIndex={-1}
-      className="fixed inset-0 z-[100] overflow-y-auto bg-background text-foreground focus:outline-none"
+      className={`fixed inset-0 z-[100] overflow-y-auto bg-background text-foreground transition-opacity duration-200 ease-out focus:outline-none ${
+        visible ? 'opacity-100' : 'opacity-0'
+      }`}
       onClickCapture={handleLinkClickCapture}
     >
       <SiteHeader />

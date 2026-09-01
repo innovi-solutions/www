@@ -30,27 +30,20 @@ export function SiteHeader() {
           />
         </Link>
 
-        {/* desktop nav */}
-        <nav className="hidden items-center gap-8 md:flex">
-          {NAV.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-4 md:flex">
-          <Link
-            href="/contact"
-            className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground"
-          >
-            CONTACT
-          </Link>
-          <BracketButton href="/contact" size="sm">
+        {/* desktop nav + CTA, grouped together on the right */}
+        <div className="hidden items-center gap-8 md:flex">
+          <nav className="flex items-center gap-8">
+            {NAV.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="nav-cursor font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <BracketButton href="/contact" size="sm" className="nav-cursor">
             BOOK A SESSION
           </BracketButton>
         </div>
@@ -71,7 +64,7 @@ export function SiteHeader() {
       {open && (
         <nav className="border-t border-border bg-background md:hidden">
           <div className="mx-auto flex max-w-7xl flex-col px-5 py-3">
-            {[...NAV, { label: 'CONTACT', href: '/contact' }].map((item) => (
+            {NAV.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}

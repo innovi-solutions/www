@@ -2,7 +2,10 @@
 
 import { Turnstile } from "@marsidev/react-turnstile";
 import { Check } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+const TURNSTILE_SLOW_MS = 8000;
 
 const PROJECT_TYPES = [
   "Custom Software",
@@ -86,8 +89,18 @@ export function ContactForm() {
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileError, setTurnstileError] = useState(false);
+  const [turnstileSlow, setTurnstileSlow] = useState(false);
   const mountedAt = useRef(Date.now()); // for elapsed_ms
   const honeypotRef = useRef<HTMLInputElement>(null);
+
+  // Surface a hint if verification hasn't resolved after a while, since a
+  // silently-disabled submit button with no explanation looks like a bug.
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY || turnstileToken || turnstileError) return;
+    const timer = setTimeout(() => setTurnstileSlow(true), TURNSTILE_SLOW_MS);
+    return () => clearTimeout(timer);
+  }, [turnstileToken, turnstileError]);
 
   function update<K extends keyof FormValues>(key: K, value: FormValues[K]) {
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -398,12 +411,46 @@ export function ContactForm() {
 
       {/* human verification */}
       <div className="mt-6">
-        <Turnstile
-          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-          onSuccess={setTurnstileToken}
-          onExpire={() => setTurnstileToken("")}
-          options={{ theme: "auto" }}
-        />
+        {TURNSTILE_SITE_KEY ? (
+          <>
+            <Turnstile
+              siteKey={TURNSTILE_SITE_KEY}
+              onSuccess={(token) => {
+                setTurnstileToken(token);
+                setTurnstileError(false);
+                setTurnstileSlow(false);
+              }}
+              onExpire={() => setTurnstileToken("")}
+              onError={() => setTurnstileError(true)}
+              options={{ theme: "auto" }}
+            />
+            {turnstileError && (
+              <p className="mt-2 text-xs text-destructive" role="alert">
+                Verification failed to load. Please disable any ad blockers or
+                content blockers and refresh the page.
+              </p>
+            )}
+            {!turnstileError && turnstileSlow && !turnstileToken && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Still loading verification — if this persists, check your
+                connection or ad blocker, or email us directly at{" "}
+                <a href="mailto:queries@innovi-solutions.com" className="underline">
+                  queries@innovi-solutions.com
+                </a>
+                .
+              </p>
+            )}
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Booking verification is temporarily unavailable. Please email us
+            directly at{" "}
+            <a href="mailto:queries@innovi-solutions.com" className="text-accent underline">
+              queries@innovi-solutions.com
+            </a>{" "}
+            and we&apos;ll get back to you.
+          </p>
+        )}
       </div>
 
       {serverError && (

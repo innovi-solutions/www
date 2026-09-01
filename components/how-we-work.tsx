@@ -6,12 +6,12 @@ const FLOW = [
 
 export function HowWeWork() {
   return (
-    <section id="how-we-work" className="border-b border-border">
+    <section id="how-we-work" className="border-b border-border bg-secondary/40">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-2 lg:items-center lg:gap-16">
         {/* statement */}
         <div>
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-bronze">
-            How We Work
+            Our Approach
           </span>
           <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
             Proven Core. Shaped to Fit.
@@ -29,7 +29,7 @@ export function HowWeWork() {
           {FLOW.map((step, i) => (
             <div
               key={step.label}
-              className={`relative flex flex-1 flex-col items-start gap-2 p-6 sm:p-7 ${
+              className={`relative flex flex-1 flex-col items-start gap-2 p-6 transition-colors duration-200 hover:bg-background sm:p-7 ${
                 i !== 0
                   ? "border-t border-border sm:border-l sm:border-t-0"
                   : ""
