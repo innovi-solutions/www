@@ -45,16 +45,6 @@ export const metadata: Metadata = {
   },
 }
 
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: SITE_NAME,
-  url: SITE_URL,
-  logo: `${SITE_URL}/innovi-wordmark-trimmed.png`,
-  description: SITE_DESCRIPTION,
-  email: 'queries@innovi-solutions.com',
-}
-
 export const viewport: Viewport = {
   colorScheme: 'light',
   themeColor: '#14213d',
@@ -65,6 +55,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Defined inline (not module-level) since a top-level const here failed to
+  // resolve during Vercel's production prerender of the auto-generated
+  // /_not-found page ("organizationJsonLd is not defined") despite building
+  // fine locally — keeping it in the component's own scope avoids relying on
+  // the bundler linking it across chunks for that special route.
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/innovi-wordmark-trimmed.png`,
+    description: SITE_DESCRIPTION,
+    email: 'queries@innovi-solutions.com',
+  }
+
   return (
     <html
       lang="en"
