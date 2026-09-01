@@ -1,69 +1,36 @@
-import { Analytics } from '@vercel/analytics/next'
-import type { Metadata, Viewport } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/site'
-import './globals.css'
+import { Analytics } from "@vercel/analytics/next";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import "./globals.css";
 
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
-  display: 'swap',
-})
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: SITE_TITLE,
-    template: `%s — ${SITE_NAME}`,
-  },
-  description: SITE_DESCRIPTION,
-  keywords: [
-    'custom software development',
-    'AI agents',
-    'SaaS development',
-    'data engineering',
-    'automation',
-    'INNOVI Solutions',
-  ],
-  openGraph: {
-    type: 'website',
-    url: SITE_URL,
-    siteName: SITE_NAME,
-    title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
-  },
-}
-
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: SITE_NAME,
-  url: SITE_URL,
-  logo: `${SITE_URL}/innovi-wordmark-trimmed.png`,
-  description: SITE_DESCRIPTION,
-  email: 'queries@innovi-solutions.com',
-}
+  title:
+    "INNOVI SOLUTIONS The Forge for Custom Software & AI Automation Solutions",
+  description:
+    "INNOVI SOLUTIONS designs and builds custom software, SaaS, data systems, and AI agents shaped around how your business actually operates plus hosting and maintenance.",
+};
 
 export const viewport: Viewport = {
-  colorScheme: 'light',
-  themeColor: '#14213d',
-}
+  colorScheme: "light",
+  themeColor: "#14213d",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
@@ -76,8 +43,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
-  )
+  );
 }
