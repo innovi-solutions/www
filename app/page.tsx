@@ -1,29 +1,29 @@
-import { SiteHeader } from '@/components/site-header'
-import { Hero } from '@/components/hero'
-import { WhatWeDo } from '@/components/what-we-do'
-import { HowWeWork } from '@/components/how-we-work'
-import { Trust } from '@/components/trust'
-import { Process } from '@/components/process'
-import { About } from '@/components/about'
-import { TechStack } from '@/components/tech-stack'
-import { FinalCta } from '@/components/final-cta'
-import { SiteFooter } from '@/components/site-footer'
+import { Navigation } from "@/components/landing/navigation";
+import { HeroSection } from "@/components/landing/hero-section";
+import { FeaturesSection } from "@/components/landing/features-section";
+import { HowItWorksSection } from "@/components/landing/how-it-works-section";
+import { InfrastructureSection } from "@/components/landing/infrastructure-section";
+import { IntegrationsSection } from "@/components/landing/integrations-section";
+import { SecuritySection } from "@/components/landing/security-section";
+import { DevelopersSection } from "@/components/landing/developers-section";
+import { AboutSection } from "@/components/landing/about-section";
+import { CtaSection } from "@/components/landing/cta-section";
+import { FooterSection } from "@/components/landing/footer-section";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
-      <SiteHeader />
-      <main>
-        <Hero />
-        <WhatWeDo />
-        <HowWeWork />
-        <Trust />
-        <Process />
-        <About />
-        <TechStack />
-        <FinalCta />
-      </main>
-      <SiteFooter />
-    </div>
-  )
+    <main className="relative min-h-screen overflow-x-hidden noise-overlay">
+      <Navigation />
+      <HeroSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <DevelopersSection />
+      <InfrastructureSection />
+      <SecuritySection />
+      <IntegrationsSection />
+      <AboutSection />
+      <CtaSection />
+      <FooterSection />
+    </main>
+  );
 }
