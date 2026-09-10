@@ -1,7 +1,20 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
+import Script from "next/script";
 import { Button } from "@/components/ui/button";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: HTMLElement,
+        options: { sitekey: string; callback: (token: string) => void; "expired-callback"?: () => void },
+      ) => string;
+      reset: (widgetId?: string) => void;
+    };
+  }
+}
 
 const sessionTypes = [
   {
@@ -38,24 +51,89 @@ export function BookingForm() {
   const [sessionType, setSessionType] = useState("discovery");
   const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+
+  const mountTimeRef = useRef(Date.now());
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetIdRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function renderTurnstile() {
+    if (!window.turnstile || !turnstileContainerRef.current || turnstileWidgetIdRef.current) return;
+    turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+      sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "",
+      callback: (token) => setTurnstileToken(token),
+      "expired-callback": () => setTurnstileToken(""),
+    });
+  }
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!consent) {
       setError("Please accept the consent statement so we can respond to your enquiry.");
       return;
     }
+    if (!turnstileToken) {
+      setError("Please complete the verification check below.");
+      return;
+    }
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    setSubmitting(true);
     setError("");
-    setSubmitted(true);
+
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session: sessionType,
+          name: data.get("fullName"),
+          email: data.get("email"),
+          company: data.get("company"),
+          date: data.get("date"),
+          type: data.get("focus"),
+          message: data.get("message"),
+          consent,
+          website: data.get("website") || "",
+          elapsedMs: Date.now() - mountTimeRef.current,
+          turnstileToken,
+        }),
+      });
+
+      const result = await res.json().catch(() => null);
+
+      if (!res.ok || !result?.ok) {
+        setError(result?.message || "Something went wrong. Please try again.");
+        if (window.turnstile && turnstileWidgetIdRef.current) {
+          window.turnstile.reset(turnstileWidgetIdRef.current);
+        }
+        setTurnstileToken("");
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError("Couldn't reach the server. Please check your connection and try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-16 items-start">
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        strategy="afterInteractive"
+        onLoad={renderTurnstile}
+      />
       {/* Form card */}
       <div
         className={`relative bg-card border border-foreground/10 rounded-2xl p-6 sm:p-10 shadow-sm transition-all duration-700 ${
@@ -88,6 +166,12 @@ export function BookingForm() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            {/* Honeypot - hidden from real users, off-screen rather than display:none */}
+            <div className="absolute left-[-9999px]" aria-hidden="true">
+              <label htmlFor="website">Website</label>
+              <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+            </div>
+
             {/* Session type */}
             <fieldset className="flex flex-col gap-4">
               <legend className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-4">
@@ -135,6 +219,7 @@ export function BookingForm() {
                   name="fullName"
                   type="text"
                   required
+                  minLength={2}
                   placeholder="Jane Doe"
                   className={inputClass}
                 />
@@ -158,12 +243,20 @@ export function BookingForm() {
                   id="company"
                   name="company"
                   type="text"
+                  required
                   placeholder="Company Inc."
                   className={inputClass}
                 />
               </Field>
               <Field label="Preferred Date" htmlFor="date">
-                <input id="date" name="date" type="date" className={inputClass} />
+                <input
+                  id="date"
+                  name="date"
+                  type="date"
+                  required
+                  min={new Date().toISOString().split("T")[0]}
+                  className={inputClass}
+                />
               </Field>
             </div>
 
@@ -187,6 +280,8 @@ export function BookingForm() {
                 id="message"
                 name="message"
                 rows={5}
+                required
+                minLength={10}
                 placeholder="What are you trying to build, replace, or automate?"
                 className={`${inputClass} resize-y min-h-32`}
               />
@@ -215,9 +310,12 @@ export function BookingForm() {
               </span>
             </label>
 
+            {/* Turnstile widget */}
+            <div ref={turnstileContainerRef} />
+
             {error && <p className="text-sm text-destructive -mt-4">{error}</p>}
 
-            {/* Assurance strip (themed replacement for captcha) */}
+            {/* Assurance strip */}
             <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
               Encrypted in transit · Reviewed by a real person · POPIA aligned
             </div>
@@ -225,9 +323,10 @@ export function BookingForm() {
             <Button
               type="submit"
               size="lg"
-              className="bg-foreground hover:bg-foreground/90 text-background rounded-full h-14 px-8 text-base group w-full sm:w-auto"
+              disabled={submitting}
+              className="bg-foreground hover:bg-foreground/90 text-background rounded-full h-14 px-8 text-base group w-full sm:w-auto disabled:opacity-60"
             >
-              Request Session
+              {submitting ? "Sending…" : "Request Session"}
             </Button>
           </form>
         )}
