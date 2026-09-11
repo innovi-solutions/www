@@ -1,5 +1,6 @@
 import type { LeadInput } from "./schema";
 import { markEmailSent } from "./supabase";
+import { SITE_URL } from "../site";
 
 const SESSION_LABELS: Record<string, string> = {
   discovery: "Discovery Call, 30 minutes",
@@ -150,6 +151,113 @@ export function buildLeadEmailHtml(leadId: string, payload: LeadInput): string {
   </table>
 </body>
 </html>`;
+}
+
+function confirmationFields(payload: LeadInput) {
+  const firstName = payload.name.split(" ")[0] || "there";
+  const preferredDate = new Date(`${payload.date}T00:00:00`).toLocaleDateString("en-ZA", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return { firstName, preferredDate };
+}
+
+// Plain text fallback (sent alongside the HTML version below for clients
+// that prefer/require it). No styling is possible here by definition, which
+// is fine - this is the backup, not the primary rendered version.
+export function buildLeadConfirmationText(payload: LeadInput): string {
+  const { firstName, preferredDate } = confirmationFields(payload);
+
+  return `Hi ${firstName},
+
+Thanks for reaching out to INNOVI Solutions. We've received your ${SESSION_LABELS[payload.session]} request and will confirm a time and send a short prep note within 3-5 business days.
+
+Here's what you sent us:
+
+Session: ${SESSION_LABELS[payload.session]}
+Preferred date: ${preferredDate}
+What you need built: ${payload.type}
+
+Your message:
+"${payload.message}"
+
+For anything urgent, email queries@innovi-solutions.com.
+
+- INNOVI Solutions`;
+}
+
+// Deliberately NOT the branded card template used for the stakeholder email
+// above - no colors, borders, or boxes, just default system font on a plain
+// background, so it reads like a person wrote it rather than an automated
+// notification. The one intentional exception is the small logo signature
+// at the end, which plain text can't render at all (images require HTML).
+export function buildLeadConfirmationHtml(payload: LeadInput): string {
+  const { firstName, preferredDate } = confirmationFields(payload);
+  const message = esc(payload.message);
+  const logoUrl = `${SITE_URL}/innovi-logo.png`;
+
+  return `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:24px;background:#ffffff;font-family:${SANS};font-size:15px;line-height:1.6;color:#000000;">
+  <p style="margin:0 0 16px 0;">Hi ${firstName},</p>
+  <p style="margin:0 0 16px 0;">
+    Thanks for reaching out to INNOVI Solutions. We've received your ${SESSION_LABELS[payload.session]}
+    request and will confirm a time and send a short prep note within 3-5 business days.
+  </p>
+  <p style="margin:0 0 4px 0;">Here's what you sent us:</p>
+  <p style="margin:0 0 16px 0;">
+    Session: ${SESSION_LABELS[payload.session]}<br>
+    Preferred date: ${preferredDate}<br>
+    What you need built: ${esc(payload.type)}
+  </p>
+  <p style="margin:0 0 4px 0;">Your message:</p>
+  <p style="margin:0 0 16px 0;font-style:italic;">&ldquo;${message}&rdquo;</p>
+  <p style="margin:0 0 24px 0;">
+    For anything urgent, email <a href="mailto:queries@innovi-solutions.com" style="color:#1a73e8;">queries@innovi-solutions.com</a>.
+  </p>
+  <p style="margin:0 0 12px 0;">- INNOVI Solutions</p>
+  <img src="${logoUrl}" alt="INNOVI Solutions" width="140" style="display:block;border:0;">
+  <p style="margin:20px 0 0 0;font-size:12px;color:#666666;">
+    You're receiving this because you requested a session at innovi-solutions.com. We only use these
+    details to respond to your enquiry, in line with POPIA.
+  </p>
+</body>
+</html>`;
+}
+
+export async function sendLeadConfirmation(payload: LeadInput): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY ?? "";
+  const fromEmail = process.env.FROM_EMAIL ?? "leads@innovi-solutions.com";
+
+  if (!apiKey) {
+    console.log(`[leads] Skipping confirmation email to ${payload.email} - RESEND_API_KEY not configured`);
+    return;
+  }
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `INNOVI Solutions <${fromEmail}>`,
+        to: [payload.email],
+        reply_to: "queries@innovi-solutions.com",
+        subject: "We've received your request - INNOVI Solutions",
+        html: buildLeadConfirmationHtml(payload),
+        text: buildLeadConfirmationText(payload),
+      }),
+    });
+    if (!res.ok) {
+      console.error(`[leads] Confirmation email failed for ${payload.email}: ${res.status} ${await res.text()}`);
+    }
+  } catch (err) {
+    console.error(`[leads] Confirmation email errored for ${payload.email}`, err);
+  }
 }
 
 export async function sendLeadNotification(leadId: string, payload: LeadInput): Promise<void> {

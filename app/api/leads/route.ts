@@ -10,7 +10,7 @@ import {
   insertLead,
 } from "@/lib/leads/supabase";
 import { verifyTurnstile } from "@/lib/leads/turnstile";
-import { sendLeadNotification } from "@/lib/leads/email";
+import { sendLeadNotification, sendLeadConfirmation } from "@/lib/leads/email";
 
 function clientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -85,6 +85,6 @@ export async function POST(request: Request) {
     return NextResponse.json(OK_RESPONSE);
   }
 
-  after(() => sendLeadNotification(leadId, payload));
+  after(() => Promise.all([sendLeadNotification(leadId, payload), sendLeadConfirmation(payload)]));
   return NextResponse.json(OK_RESPONSE);
 }
