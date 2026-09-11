@@ -4,9 +4,12 @@ import { FooterSection } from "@/components/landing/footer-section";
 import { BookingForm } from "@/components/booking/booking-form";
 
 export const metadata: Metadata = {
-  title: "Book a Session | INNOVI Solutions",
+  title: "Book a Session",
   description:
     "Book a free discovery call or a technical deep dive with INNOVI Solutions. Tell us the problem and we'll map the shortest path to a system that fits.",
+  alternates: {
+    canonical: "/book",
+  },
 };
 
 export default function BookPage() {

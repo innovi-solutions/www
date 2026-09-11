@@ -2,6 +2,7 @@ import React from "react"
 import type { Metadata } from 'next'
 import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site'
 import './globals.css'
 
 const instrumentSans = Instrument_Sans({ 
@@ -21,9 +22,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'INNOVI Solutions | The Forge for Custom Software & AI Automation Solutions',
-  description:
-    'INNOVI SOLUTIONS designs and builds custom software, SaaS, data systems, and AI agents shaped around how your business actually operates, plus hosting and maintenance.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'INNOVI Solutions | The Forge for Custom Software & AI Automation Solutions',
+    template: '%s | INNOVI Solutions',
+  },
+  description: SITE_DESCRIPTION,
   keywords: [
     'custom software development',
     'AI agents',
@@ -32,10 +36,19 @@ export const metadata: Metadata = {
     'automation',
     'INNOVI Solutions',
   ],
+  alternates: {
+    canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'INNOVI Solutions | The Forge for Custom Software & AI',
     description:
       'A dev shop building custom software, SaaS, data systems, and AI agents, then hosting and maintaining what it ships.',
+    url: SITE_URL,
+    siteName: SITE_NAME,
     type: 'website',
   },
   twitter: {
@@ -47,7 +60,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport = {
-  themeColor: '#14213d',
+  themeColor: '#fafaf9',
 }
 
 export default function RootLayout({
@@ -55,9 +68,28 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Defined inside the component, not at module scope: a module-level const
+  // here previously broke Vercel's production build ("ReferenceError:
+  // organizationJsonLd is not defined") while prerendering /_not-found -
+  // keeping it in the component's own scope avoids relying on the bundler
+  // linking a module-level const across chunks for that special route.
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/innovi-logo.png`,
+    description: SITE_DESCRIPTION,
+    email: 'queries@innovi-solutions.com',
+  }
+
   return (
     <html lang="en">
       <body className={`${instrumentSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         {children}
         <Analytics />
       </body>
