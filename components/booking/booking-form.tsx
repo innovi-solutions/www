@@ -134,7 +134,6 @@ export function BookingForm() {
         strategy="afterInteractive"
         onLoad={renderTurnstile}
       />
-      {/* Form card */}
       <div
         className={`relative bg-card border border-foreground/10 rounded-2xl p-6 sm:p-10 shadow-sm transition-all duration-700 ${
           mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
@@ -145,8 +144,8 @@ export function BookingForm() {
             <div>
               <h2 className="text-3xl font-display tracking-tight mb-3">Request received.</h2>
               <p className="text-muted-foreground leading-relaxed max-w-md">
-                Thanks for reaching out. We&apos;ll confirm a time and send a short prep note within one
-                business day. For anything urgent, email{" "}
+                Thanks for reaching out. We&apos;ll confirm a time and send a short prep note within 3-5
+                business days. For anything urgent, email{" "}
                 <a
                   href="mailto:queries@innovi-solutions.com"
                   className="text-foreground underline underline-offset-4"
@@ -166,13 +165,12 @@ export function BookingForm() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-            {/* Honeypot - hidden from real users, off-screen rather than display:none */}
+            {/* honeypot - off-screen, not display:none, so bots that skip hidden fields still fill it in */}
             <div className="absolute left-[-9999px]" aria-hidden="true">
               <label htmlFor="website">Website</label>
               <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
             </div>
 
-            {/* Session type */}
             <fieldset className="flex flex-col gap-4">
               <legend className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-4">
                 Session Type
@@ -211,7 +209,6 @@ export function BookingForm() {
               </div>
             </fieldset>
 
-            {/* Name + email */}
             <div className="grid sm:grid-cols-2 gap-6">
               <Field label="Full Name" htmlFor="fullName">
                 <input
@@ -236,7 +233,6 @@ export function BookingForm() {
               </Field>
             </div>
 
-            {/* Company + date */}
             <div className="grid sm:grid-cols-2 gap-6">
               <Field label="Company" htmlFor="company">
                 <input
@@ -260,7 +256,6 @@ export function BookingForm() {
               </Field>
             </div>
 
-            {/* Focus area */}
             <Field label="What do you need built?" htmlFor="focus">
               <select id="focus" name="focus" required defaultValue="" className={`${inputClass} pr-10`}>
                 <option value="" disabled>
@@ -274,7 +269,6 @@ export function BookingForm() {
               </select>
             </Field>
 
-            {/* Message */}
             <Field label="Tell us about the problem" htmlFor="message">
               <textarea
                 id="message"
@@ -287,7 +281,6 @@ export function BookingForm() {
               />
             </Field>
 
-            {/* Consent */}
             <label className="flex items-start gap-3 rounded-xl border border-foreground/10 bg-foreground/[0.02] p-4 cursor-pointer">
               <span className="relative flex items-center justify-center mt-0.5">
                 <input
@@ -310,12 +303,10 @@ export function BookingForm() {
               </span>
             </label>
 
-            {/* Turnstile widget */}
             <div ref={turnstileContainerRef} />
 
             {error && <p className="text-sm text-destructive -mt-4">{error}</p>}
 
-            {/* Assurance strip */}
             <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
               Encrypted in transit · Reviewed by a real person · POPIA aligned
             </div>
@@ -332,7 +323,6 @@ export function BookingForm() {
         )}
       </div>
 
-      {/* Sidebar */}
       <aside
         className={`flex flex-col gap-12 lg:pt-4 transition-all duration-700 delay-150 ${
           mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
@@ -366,7 +356,7 @@ export function BookingForm() {
               </a>
             </ContactRow>
             <ContactRow label="Response Time">
-              <span className="text-sm text-foreground">Within 1 business day</span>
+              <span className="text-sm text-foreground">Within 3-5 business days</span>
             </ContactRow>
             <ContactRow label="Working With">
               <span className="text-sm text-foreground">Remote, global clients</span>
