@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 
-// Runs on Vercel's own cron scheduler (see vercel.json), not GitHub Actions
-// and not Supabase's pg_cron. This matters specifically because Supabase only
-// counts real external API requests toward its 7-day free-tier inactivity
-// pause - pg_cron executions happen inside the database and don't count at
-// all. This route makes a genuine external HTTP call every time it fires,
-// which does count, and reuses that call to run the stale-leads archive job
-// on the same trip (safe to call more than strictly necessary - the SQL
-// function gates itself and no-ops if it already ran within the last 4 days).
+// Triggered by Vercel Cron (vercel.json), not pg_cron - Supabase only counts
+// external requests toward its inactivity pause, not internal DB cron jobs.
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");

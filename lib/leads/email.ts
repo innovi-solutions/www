@@ -164,9 +164,7 @@ function confirmationFields(payload: LeadInput) {
   return { firstName, preferredDate };
 }
 
-// Plain text fallback (sent alongside the HTML version below for clients
-// that prefer/require it). No styling is possible here by definition, which
-// is fine - this is the backup, not the primary rendered version.
+// Plain text fallback, sent alongside the HTML version below.
 export function buildLeadConfirmationText(payload: LeadInput): string {
   const { firstName, preferredDate } = confirmationFields(payload);
 
@@ -188,11 +186,7 @@ For anything urgent, email queries@innovi-solutions.com.
 - INNOVI Solutions`;
 }
 
-// Deliberately NOT the branded card template used for the stakeholder email
-// above - no colors, borders, or boxes, just default system font on a plain
-// background, so it reads like a person wrote it rather than an automated
-// notification. The one intentional exception is the small logo signature
-// at the end, which plain text can't render at all (images require HTML).
+// Deliberately plain, not the branded template above - reads like a person, not a notification tool.
 export function buildLeadConfirmationHtml(payload: LeadInput): string {
   const { firstName, preferredDate } = confirmationFields(payload);
   const message = esc(payload.message);

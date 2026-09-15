@@ -68,11 +68,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  // Defined inside the component, not at module scope: a module-level const
-  // here previously broke Vercel's production build ("ReferenceError:
-  // organizationJsonLd is not defined") while prerendering /_not-found -
-  // keeping it in the component's own scope avoids relying on the bundler
-  // linking a module-level const across chunks for that special route.
+  // Keep this inside the component - a module-level const here previously broke the /_not-found build.
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
