@@ -144,8 +144,8 @@ export function BookingForm() {
             <div>
               <h2 className="text-3xl font-display tracking-tight mb-3">Request received.</h2>
               <p className="text-muted-foreground leading-relaxed max-w-md">
-                Thanks for reaching out. We&apos;ll confirm a time and send a short prep note within one
-                business day. For anything urgent, email{" "}
+                Thanks for reaching out. We&apos;ll confirm a time and send a short prep note within 3-5
+                business days. For anything urgent, email{" "}
                 <a
                   href="mailto:queries@innovi-solutions.com"
                   className="text-foreground underline underline-offset-4"
@@ -356,7 +356,7 @@ export function BookingForm() {
               </a>
             </ContactRow>
             <ContactRow label="Response Time">
-              <span className="text-sm text-foreground">Within 1 business day</span>
+              <span className="text-sm text-foreground">Within 3-5 business days</span>
             </ContactRow>
             <ContactRow label="Working With">
               <span className="text-sm text-foreground">Remote, global clients</span>

@@ -102,7 +102,7 @@ export function CtaSection() {
                     <div className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">
                       Response time
                     </div>
-                    <div className="text-sm text-foreground">Within 1 business day</div>
+                    <div className="text-sm text-foreground">Within 3-5 business days</div>
                   </div>
                   <div>
                     <div className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">
